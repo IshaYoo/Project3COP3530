@@ -3,6 +3,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 
+#First make a spotify devloper account and create an app
+#Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
 SPOTIPY_CLIENT_ID='78b872793308473895468b5886bfbaa3'
 SPOTIPY_CLIENT_SECRET='e4448212cba449439cc4b73be9809e8b'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
