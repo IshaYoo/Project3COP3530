@@ -3,6 +3,14 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 
+class Song:
+    name = ''
+    ID = ''
+
+class Artist:
+    name = ''
+    ID = ''
+
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
 SPOTIPY_CLIENT_ID='78b872793308473895468b5886bfbaa3'
@@ -14,6 +22,7 @@ SCOPE = 'user-top-read'
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET, redirect_uri=SPOTIPY_REDIRECT_URI, scope=SCOPE))
 
 #returns an array of all songs from artist that are NOT solo songs
+#...returns an array of song objects
 def get_filtered_albums_and_songs(artist_name):
     artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items'][0]['id']
     search = sp.artist_albums(artistID, album_type='album', limit=1)
@@ -32,10 +41,19 @@ def get_filtered_albums_and_songs(artist_name):
                 continue
             albums.append(album['name'])
             #print("Album: " + album['name'])
-            temp_tracks = get_filtered_tracks_from_album(album['name'], artist_name)
-            for song in temp_tracks:
+            temp_track_names = get_filtered_tracks_from_album(album['name'], artist_name)
+            for song in temp_track_names:
                 #print("   song: " + song)
-                tracks.append(song)
+                songObject = Song()
+                songQuery = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['items']
+                if (len(songQuery) > 0):
+                    songID = songQuery[0]['id']
+                    #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
+                    songNAME = songQuery[0]['name']
+                    print(songNAME + " has ID: " + songID)
+                    songObject.name = song
+                    songObject.ID = songID
+                    tracks.append(songObject)
             counter += 1
     return tracks
 
@@ -65,6 +83,46 @@ def get_filtered_tracks_from_album(album_name, artist_name):
         #print("        " + tempArtist['name'])
     counter+=1
  return track_ids
+
+
+#Get all artists related to song...returns an array of artist objects
+def get_artists_from_song(song_name, artist_name):
+    artistArr = []
+    tracks = sp.search("artist:" + artist_name + ", track:" + song_name, limit=1, offset=0, type='track', market="ES")
+    for track in tracks['tracks']['items']:
+        #print(track['name'] + " made by ")
+        for artist in track['artists']:
+            artistName = artist['name']
+            artistID = artist['id']
+            #print(artistName + " with ID " + artistID)
+            artistObject = Artist()
+            artistObject.name = artistName
+            artistObject.ID = artistID
+            artistArr.append(artistObject)
+
+    return artistArr
+
+
+#given a song name and artist name. Return the song object
+def get_song(song1_name, artist1_name):
+    songO = Song()
+    song0.name = song1_name
+    songID = sp.search("artist:" + artist_name + ", song:" + song1_name, limit=1, offset=0, type='track', market="ES")['track']['items'][0]['id']
+    songO.ID = songID
+    return songO
+
+
+def runTest():
+    for songx in get_filtered_albums_and_songs("J. Cole"):
+        print(songx.name + " has ID " + songx.ID)
+    print("                 ")
+    for artists in get_artists_from_song("Forbidden Fruit", "J. Cole"):
+        print(artists.name + " has ID " + artists.ID)
+
+
+#TEST
+#runTest()
+
 
 #############
 #ALL code below was for testing
@@ -181,9 +239,3 @@ def get_albums_and_songs(artist_name):
                 tracks.append(song)
             counter += 1
     return tracks
-
-#user_artist = "Lil Pump"
-#tracks = get_filtered_albums_and_songs(user_artist)
-#print(str(len(tracks)) + " number of songs by artist")
-#for song in tracks:
-#    print(song)
