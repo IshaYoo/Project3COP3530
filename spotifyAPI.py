@@ -2,14 +2,14 @@ import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
+class Artist:
+    name = ""
+    ID = ""
 
 class Song:
-    name = ''
-    ID = ''
+    name = ""
+    ID = ""
 
-class Artist:
-    name = ''
-    ID = ''
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
@@ -50,7 +50,7 @@ def get_filtered_albums_and_songs(artist_name):
                     songID = songQuery[0]['id']
                     #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
                     songNAME = songQuery[0]['name']
-                    print(songNAME + " has ID: " + songID)
+                    #print(songNAME + " has ID: " + songID)
                     songObject.name = song
                     songObject.ID = songID
                     tracks.append(songObject)
@@ -77,10 +77,6 @@ def get_filtered_tracks_from_album(album_name, artist_name):
     if (len(song['artists']) == 1):
         continue
     track_ids.append(song['name'])
-    #print("   " + song['name'] + " has " + str(len(song['artists'])) + " artists")
-    for tempArtist in song['artists']:
-        x = "s"
-        #print("        " + tempArtist['name'])
     counter+=1
  return track_ids
 
@@ -105,11 +101,11 @@ def get_artists_from_song(song_name, artist_name):
 
 #given a song name and artist name. Return the song object
 def get_song(song1_name, artist1_name):
-    songO = Song()
+    song0 = Song()
     song0.name = song1_name
-    songID = sp.search("artist:" + artist_name + ", song:" + song1_name, limit=1, offset=0, type='track', market="ES")['track']['items'][0]['id']
-    songO.ID = songID
-    return songO
+    songID = sp.search("artist:" + artist1_name + ", track:" + song1_name, limit=1, offset=0, type='track', market="ES")['tracks']['items'][0]['id']
+    song0.ID = songID
+    return song0
 
 
 def runTest():
@@ -208,7 +204,7 @@ def get_albums(artist_name):
                 continue
             albums.append(album['name'])
             counter += 1
-    print(str(counter) + " many albums")
+    #print(str(counter) + " many albums")
     return albums
 
 #NOT USED
@@ -232,10 +228,10 @@ def get_albums_and_songs(artist_name):
             if (found):
                 continue
             albums.append(album['name'])
-            print("Album: " + album['name'])
+            #print("Album: " + album['name'])
             temp_tracks = get_tracks_from_album(album['name'])
             for song in temp_tracks:
-                print("   song: " + song)
+                #print("   song: " + song)
                 tracks.append(song)
             counter += 1
     return tracks

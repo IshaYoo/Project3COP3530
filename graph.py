@@ -28,7 +28,7 @@ class Graph:
 
     def createGraph(self, song1_name, artist1_name, song2_name, artist2_name):
         song1 = Song("placeHolder", "placeHOlder") #get_song(song1_name, artist1_name)
-        q.put(song1.ID)
+        q.insert(song1.ID)
         insert_related_songs(self)
         while not q.empty():
             insert_related_songs(self)
@@ -54,15 +54,18 @@ class Graph:
                 self.adj[song.ID].append(song_, artist)
                 self.adj[song_.ID].append(song, artist)
    
+
+
+#tracks = get_filtered_albums_and_songs("J Cole")
+#for song in tracks:
+    #print(song.name + " has ID " + song.ID)
+#print(str(len(tracks)) + " number of songs by artist")
+
+#artists = get_artists_from_song('Sparks Will Fly', "J Cole")
+#for a in artists:
+    #print(a.name + " has ID " + a.ID)
+#song1 = get_song('Sparks Will Fly', "J Cole")
+#print(song1.name + " has ID " + song1.ID)
+
 G = Graph()
-S1 = Song("M2", "wierhisugfu8wi3r-0")
-S2 = Song("M5", "w435etghdhwi3r-0")
-S3 = Song("M3", "siouf08dgffdsi9gi9dg")
-A1 = Artist("JCole", "w87d98f7s98dfd")
-G.insert(S1, S2, A1)
-G.insert(S1, S3, A1)
-G.findCurrentSong("wierhisugfu8wi3r-0")
-
-tracks = get_filtered_albums_and_songs("J Cole")
-print(str(len(tracks)) + " number of songs by artist")
-
+G.createGraph('Sparks Will Fly', "J Cole", 'Be Like Me', 'Lil Pump')
