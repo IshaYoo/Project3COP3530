@@ -54,7 +54,8 @@ class Graph:
             print("   -adding " + artist.name + "'s songs to the graph")
             Songs = get_filtered_albums_and_songs(artist.name)
             if len(Songs) == 1:
-                artistSet.discard(artist.name)
+                print("discarding " + artist.name)
+                self.artistSet.discard(artist.name)
             for song in Songs:
                 if(song.name == song_):
                     continue
