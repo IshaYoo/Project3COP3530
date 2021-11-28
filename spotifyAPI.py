@@ -82,19 +82,25 @@ def get_filtered_tracks_from_album(album_name, artist_name):
 
 
 #Get all artists related to song...returns an array of artist objects
-def get_artists_from_song(song_name, artist_name):
+def get_artists_from_song(song_name, song_id):
     artistArr = []
-    tracks = sp.search("artist:" + artist_name + ", track:" + song_name, limit=1, offset=0, type='track', market="ES")
-    for track in tracks['tracks']['items']:
-        #print(track['name'] + " made by ")
-        for artist in track['artists']:
-            artistName = artist['name']
-            artistID = artist['id']
-            #print(artistName + " with ID " + artistID)
-            artistObject = Artist()
-            artistObject.name = artistName
-            artistObject.ID = artistID
-            artistArr.append(artistObject)
+    #track = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items'][0]['artists']
+    tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items']
+    indexer = 0
+    track = tracks[indexer]
+    #print("checking " + track['id'] + " vs " + song_id)
+    while track['id'] != song_id:
+        indexer += 1
+        track = tracks[indexer]
+    track = track['artists']
+    for artist in track:
+        artistName = artist['name']
+        artistID = artist['id']
+        #print(artistName + " with ID " + artistID)
+        artistObject = Artist()
+        artistObject.name = artistName
+        artistObject.ID = artistID
+        artistArr.append(artistObject)
 
     return artistArr
 

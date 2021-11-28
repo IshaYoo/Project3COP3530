@@ -25,34 +25,41 @@ class Graph:
     def findCurrentSong(self, ID):
         for vertex in self.adj[ID]:
             print("Name of Song: " + vertex[0].name)
+    def printAllSongs(self):
+        for row in self.adj:
+            for col in row:
+                print("s")
+                print(col[0].name)
+
 
     def createGraph(self, song1_name, artist1_name, song2_name, artist2_name):
-        song1 = Song("placeHolder", "placeHOlder") #get_song(song1_name, artist1_name)
-        q.insert(song1.ID)
-        insert_related_songs(self)
-        while not q.empty():
-            insert_related_songs(self)
-        song2 = Song("placeholder", "placeholder2") #get_song(song2_name, artist2_name)
-        q.put(song2.ID)
-        while not q.empty():
-            insert_related_songs(self)
+        song1 = get_song(song1_name, artist1_name)
+        self.q.put(song1)
+        self.insert_related_songs()
+        while not self.q.empty():
+            self.insert_related_songs()
+        song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
+        self.q.put(song2)
+        while not self.q.empty():
+            self.insert_related_songs()
     def insert_related_songs(self):
-        song_ = q.get()
-        Artists = [] #get_artists_related(song_)
+        song_Name = self.q.get().name
+        song_ID = self.q.get().ID
+        Artists = get_artists_from_song(song_Name, song_ID)
         for artist in Artists:
-            if artist.name in artistsSet:
+            if artist.name in self.artistSet:
                 continue
-            artistSet.add(artist)
-            Songs = [] #get_filtered_songs(artist.name)
+            self.artistSet.add(artist)
+            Songs = get_filtered_albums_and_songs(artist.name)
             if len(Songs) == 1:
                 artistSet.discard(artist.name)
             for song in Songs:
                 if(song.name == song_):
                     continue
                 if len(self.adj[song.ID]) == 0:
-                    q.put(song.ID)
-                self.adj[song.ID].append(song_, artist)
-                self.adj[song_.ID].append(song, artist)
+                    self.q.put(song.ID)
+                self.adj[song.ID].append({song_, artist})
+                self.adj[song_.ID].append({song, artist})
    
 
 
@@ -61,7 +68,8 @@ class Graph:
     #print(song.name + " has ID " + song.ID)
 #print(str(len(tracks)) + " number of songs by artist")
 
-#artists = get_artists_from_song('Sparks Will Fly', "J Cole")
+#swf = 5fBoh0hqi7shM8a8nfPnDB
+#artists = get_artists_from_song('Sparks Will Fly', "5fBoh0hqi7shM8a8nfPnDB")
 #for a in artists:
     #print(a.name + " has ID " + a.ID)
 #song1 = get_song('Sparks Will Fly', "J Cole")
@@ -69,3 +77,4 @@ class Graph:
 
 G = Graph()
 G.createGraph('Sparks Will Fly', "J Cole", 'Be Like Me', 'Lil Pump')
+G.printAllSongs()
