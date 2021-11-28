@@ -90,6 +90,7 @@ def get_artists_from_song(song_name, song_id):
     track = tracks[indexer]
     #print("checking " + track['id'] + " vs " + song_id)
     while track['id'] != song_id:
+        print(indexer)
         indexer += 1
         track = tracks[indexer]
     track = track['artists']

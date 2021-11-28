@@ -34,22 +34,24 @@ class Graph:
 
     def createGraph(self, song1_name, artist1_name, song2_name, artist2_name):
         song1 = get_song(song1_name, artist1_name)
+        print("Adding " + song1.name + " and all related songs to graph")
         self.q.put(song1)
         self.insert_related_songs()
         while not self.q.empty():
             self.insert_related_songs()
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
+        print("Adding " + song2.name + " and all related songs to graph")
         self.q.put(song2)
         while not self.q.empty():
             self.insert_related_songs()
     def insert_related_songs(self):
-        song_Name = self.q.get().name
-        song_ID = self.q.get().ID
-        Artists = get_artists_from_song(song_Name, song_ID)
+        song_ = self.q.get()
+        Artists = get_artists_from_song(song_.name, song_.ID)
         for artist in Artists:
             if artist.name in self.artistSet:
                 continue
-            self.artistSet.add(artist)
+            self.artistSet.add(artist.name)
+            print("   -adding " + artist.name + "'s songs to the graph")
             Songs = get_filtered_albums_and_songs(artist.name)
             if len(Songs) == 1:
                 artistSet.discard(artist.name)
@@ -57,7 +59,7 @@ class Graph:
                 if(song.name == song_):
                     continue
                 if len(self.adj[song.ID]) == 0:
-                    self.q.put(song.ID)
+                    self.q.put(song)
                 self.adj[song.ID].append({song_, artist})
                 self.adj[song_.ID].append({song, artist})
    
@@ -77,4 +79,5 @@ class Graph:
 
 G = Graph()
 G.createGraph('Sparks Will Fly', "J Cole", 'Be Like Me', 'Lil Pump')
+print("created")
 G.printAllSongs()
