@@ -1,6 +1,7 @@
 from collections import defaultdict
 from spotifyAPI import *
 from queue import Queue
+import time
 class Artist:
     name = ""
     ID = ""
@@ -86,9 +87,9 @@ class Graph:
     #print(a.name + " has ID " + a.ID)
 #song1 = get_song('Sparks Will Fly', "J Cole")
 #print(song1.name + " has ID " + song1.ID)
-
 G = Graph()
-print("begining")
-G.createGraph('Be Like Me', "Lil Pump", 'Linen', 'The Boas')
-print("created")
+before = time.localtime().tm_min
+G.createGraph('Linen', 'The Boas', 'Be Like Me', "Lil Pump")
+after = time.localtime().tm_min
+print("Took " + str(after - before) + " minutes to create")
 G.printAllSongs()

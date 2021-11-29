@@ -14,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='c52e3e3216814f08b4a90081450363d0'
-SPOTIPY_CLIENT_SECRET='7f109c88cd7d4792992c2c572e0906f3'
+SPOTIPY_CLIENT_ID='b396c4f805964970ad6993ebfa36ba69'
+SPOTIPY_CLIENT_SECRET='73ca5b357fc6490d99ccf50741dd321e'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
@@ -25,6 +25,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, clie
 #returns an array of all songs from artist that are NOT solo songs
 #...returns an array of song objects
 def get_filtered_albums_and_songs(artist_name):
+    before = time.localtime().tm_min
     timedOut = True
     timeToSleep = 5
     while timedOut:
@@ -48,6 +49,10 @@ def get_filtered_albums_and_songs(artist_name):
         if counter > 50:
             print("Reached album limit. Cutting off albums for sake of time...")
             return tracks
+        after = time.localtime().tm_min
+        if after - before > 5:
+            print("Reached time limit. Cutting off albums for sake of time...")
+            return tracks
         search = sp.next(search)
         for album in search['items']:
             found = False
@@ -62,16 +67,9 @@ def get_filtered_albums_and_songs(artist_name):
             temp_track_names = get_filtered_tracks_from_album(album['name'], artist_name)
             for song in temp_track_names:
                 #print("   song: " + song)
-                songObject = Song()
-                songQuery = sp.search("track:" + song, limit=1, offset=0, type='track')['tracks']['items']
-                if (len(songQuery) > 0):
-                    songID = songQuery[0]['id']
-                    #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
-                    songNAME = songQuery[0]['name']
-                    #print(songNAME + " has ID: " + songID)
-                    songObject.name = song
-                    songObject.ID = songID
-                    tracks.append(songObject)
+                #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
+                #print(songNAME + " has ID: " + songID)
+                tracks.append(song)
             counter += 1
     return tracks
 
@@ -84,6 +82,7 @@ def get_filtered_tracks_from_album(album_name, artist_name):
  track_ids = []
  counter = 0
  for song in search['tracks']['items']:
+    newSong = Song()
     duplicate = False
     for found_tracks in track_ids:
         if(found_tracks == song['name']):
@@ -95,7 +94,9 @@ def get_filtered_tracks_from_album(album_name, artist_name):
         continue
     if (len(song['artists']) == 1):
         continue
-    track_ids.append(song['name'])
+    newSong.name = song['name']
+    newSong.ID = song['id']
+    track_ids.append(newSong)
     counter+=1
  return track_ids
 
