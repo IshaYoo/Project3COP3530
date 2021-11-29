@@ -2,6 +2,7 @@ import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
+import time
 class Artist:
     name = ""
     ID = ""
@@ -13,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='78b872793308473895468b5886bfbaa3'
-SPOTIPY_CLIENT_SECRET='e4448212cba449439cc4b73be9809e8b'
+SPOTIPY_CLIENT_ID='2c43ee311bbf471ca4074d7453895f4a'
+SPOTIPY_CLIENT_SECRET='30c33390a17b4ddd9561b7abc02193e4'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
@@ -24,7 +25,18 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, clie
 #returns an array of all songs from artist that are NOT solo songs
 #...returns an array of song objects
 def get_filtered_albums_and_songs(artist_name):
-    searchResult = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items']
+    timedOut = True
+    timeToSleep = 5
+    while timedOut:
+        try:
+            searchResult = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist')['artists']['items']
+            timedOut = False
+        except:
+            print("An error occured. Trying again")
+            time.sleep(timeToSleep)
+            timeToSleep *= 2
+        
+
     if len(searchResult) == 0:
         return []
     artistID = searchResult[0]['id']
@@ -48,7 +60,7 @@ def get_filtered_albums_and_songs(artist_name):
             for song in temp_track_names:
                 #print("   song: " + song)
                 songObject = Song()
-                songQuery = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['items']
+                songQuery = sp.search("track:" + song, limit=1, offset=0, type='track')['tracks']['items']
                 if (len(songQuery) > 0):
                     songID = songQuery[0]['id']
                     #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
@@ -63,7 +75,7 @@ def get_filtered_albums_and_songs(artist_name):
 #returns an array of all songs in an album that are NOT solo songs
 #used in get_filtered_albums_and_songs
 def get_filtered_tracks_from_album(album_name, artist_name):
- search = sp.search("album:" + album_name + ", artist:" + artist_name, limit=50, offset=0, type='track', market="ES")
+ search = sp.search("album:" + album_name + ", artist:" + artist_name, limit=50, offset=0, type='track')
  found = False
  track_ids = []
  counter = 0
@@ -88,13 +100,15 @@ def get_filtered_tracks_from_album(album_name, artist_name):
 def get_artists_from_song(song_name, song_id):
     artistArr = []
     #track = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items'][0]['artists']
-    tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items']
+    tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track')['tracks']['items']
     indexer = 0
     track = tracks[indexer]
     #print("checking " + track['id'] + " vs " + song_id)
     while track['id'] != song_id:
         #print(indexer)
         indexer += 1
+        if indexer >= len(tracks):
+            return []
         track = tracks[indexer]
     track = track['artists']
     for artist in track:
@@ -113,9 +127,7 @@ def get_artists_from_song(song_name, song_id):
 def get_song(song1_name, artist1_name):
     song0 = Song()
     song0.name = song1_name
-    print("S")
-    songID = sp.search("artist:" + artist1_name + ", track:" + song1_name, limit=1, offset=0, type='track', market="ES")['tracks']['items'][0]['id']
-    print("fg")
+    songID = sp.search("artist:" + artist1_name + ", track:" + song1_name, limit=1, offset=0, type='track')['tracks']['items'][0]['id']
     song0.ID = songID
     return song0
 
@@ -129,14 +141,21 @@ def runTest():
 
 def testSong():
     print("mne")
-    songID = sp.search("track: Sparks Will Fly", limit=1, offset=0, type='track', market="ES")
+    songID = sp.search("track: Sparks Will Fly", limit=1, offset=0, type='track')
+    print(songID['tracks']['items'][0]['id'])
+    #['tracks']['items'][0]['id']
+
+def testArtist():
+    print("ert")
+    songID = sp.search("artist: Lil Pump", limit=1, offset=0, type='artist')
     print(songID)
     #['tracks']['items'][0]['id']
 
-
 #TEST
-runTest()
+#runTest()
 #testSong()
+#print(sp.categories())
+#testArtist()
 
 #############
 #ALL code below was for testing
@@ -145,7 +164,7 @@ runTest()
 
 #NOT USED
 def get_track_artists(song_name, artist_name):
- search = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")
+ search = sp.search("track:" + song_name, limit=50, offset=0, type='track')
  found = False
  track_ids = []
  for song in search['tracks']['items']:
@@ -163,7 +182,7 @@ def get_track_artists(song_name, artist_name):
 
 #NOT USED
 def get_tracks(artist_name):
- search = sp.search("artist:" + artist_name, limit=50, offset=0, type='track', market="ES")
+ search = sp.search("artist:" + artist_name, limit=50, offset=0, type='track')
  found = False
  track_ids = []
  counter = 0
@@ -183,7 +202,7 @@ def get_tracks(artist_name):
 
 #NOT USED
 def get_tracks_from_album(album_name):
- search = sp.search("album:" + album_name, limit=50, offset=0, type='track', market="ES")
+ search = sp.search("album:" + album_name, limit=50, offset=0, type='track')
  found = False
  track_ids = []
  counter = 0
@@ -203,7 +222,7 @@ def get_tracks_from_album(album_name):
 
 #NOT USED
 def get_albums(artist_name):
-    artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items'][0]['id']
+    artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist')['artists']['items'][0]['id']
     #results = sp.artist_albums(birdy_uri, album_type='album')
     search = sp.artist_albums(artistID, album_type='album', limit=1)
     #search = sp.artist_albums(artistID, album_type='album', country=None, limit=20, offset=0)
@@ -227,7 +246,7 @@ def get_albums(artist_name):
 
 #NOT USED
 def get_albums_and_songs(artist_name):
-    artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items'][0]['id']
+    artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist')['artists']['items'][0]['id']
     #results = sp.artist_albums(birdy_uri, album_type='album')
     search = sp.artist_albums(artistID, album_type='album', limit=1)
     #search = sp.artist_albums(artistID, album_type='album', country=None, limit=20, offset=0)

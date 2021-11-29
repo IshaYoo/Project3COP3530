@@ -26,9 +26,10 @@ class Graph:
         for vertex in self.adj[ID]:
             print("Name of Song: " + vertex[0].name)
     def printAllSongs(self):
+        print(len(self.adj))
         for row in self.adj:
+            print("row")
             for col in row:
-                print("s")
                 print(col[0].name)
 
 
@@ -52,7 +53,14 @@ class Graph:
                 continue
             self.artistSet.add(artist.name)
             print("   -adding " + artist.name + "'s songs to the graph")
-            Songs = get_filtered_albums_and_songs(artist.name)
+            timedOut = True
+            while timedOut:
+                try:
+                    Songs = get_filtered_albums_and_songs(artist.name)
+                    timedOut = False
+                except:
+                    print("An error occured. Skipping " + artist.name)
+                    continue
             if len(Songs) == 1:
                 print("discarding " + artist.name)
                 self.artistSet.discard(artist.name)
@@ -79,6 +87,6 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 
 G = Graph()
-G.createGraph('Little People', "Purple Fence", 'Linen', 'The Boas')
+G.createGraph('Be Like Me', "Lil Pump", 'Linen', 'The Boas')
 print("created")
 G.printAllSongs()
