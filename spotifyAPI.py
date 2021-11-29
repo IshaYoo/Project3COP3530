@@ -14,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='f4c360b9a14a4c4b9dbb38163650ed2c'
-SPOTIPY_CLIENT_SECRET='339af01f877d4e7e843dfd82e5d41bd8'
+SPOTIPY_CLIENT_ID='c52e3e3216814f08b4a90081450363d0'
+SPOTIPY_CLIENT_SECRET='7f109c88cd7d4792992c2c572e0906f3'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
@@ -45,6 +45,9 @@ def get_filtered_albums_and_songs(artist_name):
     tracks = []
     counter = 0
     while search['next']:
+        if counter > 50:
+            print("Reached album limit. Cutting off albums for sake of time...")
+            return tracks
         search = sp.next(search)
         for album in search['items']:
             found = False
@@ -101,7 +104,10 @@ def get_filtered_tracks_from_album(album_name, artist_name):
 def get_artists_from_song(song_name, song_id):
     artistArr = []
     #track = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items'][0]['artists']
-    tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track')['tracks']['items']
+    try:
+        tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track')['tracks']['items']
+    except:
+        return []
     indexer = 0
     if (len(tracks) == 0):
         return []
