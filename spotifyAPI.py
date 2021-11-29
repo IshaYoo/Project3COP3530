@@ -24,7 +24,10 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, clie
 #returns an array of all songs from artist that are NOT solo songs
 #...returns an array of song objects
 def get_filtered_albums_and_songs(artist_name):
-    artistID = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items'][0]['id']
+    searchResult = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist', market="ES")['artists']['items']
+    if len(searchResult) == 0:
+        return []
+    artistID = searchResult[0]['id']
     search = sp.artist_albums(artistID, album_type='album', limit=1)
     albums = []
     tracks = []
@@ -110,7 +113,9 @@ def get_artists_from_song(song_name, song_id):
 def get_song(song1_name, artist1_name):
     song0 = Song()
     song0.name = song1_name
+    print("S")
     songID = sp.search("artist:" + artist1_name + ", track:" + song1_name, limit=1, offset=0, type='track', market="ES")['tracks']['items'][0]['id']
+    print("fg")
     song0.ID = songID
     return song0
 
@@ -122,10 +127,16 @@ def runTest():
     for artists in get_artists_from_song("Forbidden Fruit", "J. Cole"):
         print(artists.name + " has ID " + artists.ID)
 
+def testSong():
+    print("mne")
+    songID = sp.search("track: Sparks Will Fly", limit=1, offset=0, type='track', market="ES")
+    print(songID)
+    #['tracks']['items'][0]['id']
+
 
 #TEST
-#runTest()
-
+runTest()
+#testSong()
 
 #############
 #ALL code below was for testing

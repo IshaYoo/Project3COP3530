@@ -79,6 +79,6 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 
 G = Graph()
-G.createGraph('Sparks Will Fly', "J Cole", 'Be Like Me', 'Lil Pump')
+G.createGraph('Little People', "Purple Fence", 'Linen', 'The Boas')
 print("created")
 G.printAllSongs()
