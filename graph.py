@@ -51,16 +51,16 @@ class Graph:
         for artist in Artists:
             if artist.name in self.artistSet:
                 continue
+            if artist.name == "Baby Sleep":
+                continue
             self.artistSet.add(artist.name)
             print("   -adding " + artist.name + "'s songs to the graph")
-            timedOut = True
-            while timedOut:
-                try:
-                    Songs = get_filtered_albums_and_songs(artist.name)
-                    timedOut = False
-                except:
-                    print("An error occured. Skipping " + artist.name)
-                    continue
+            skipIt = False
+            try:
+                Songs = get_filtered_albums_and_songs(artist.name)
+            except:
+                print("An error occured. Skipping " + artist.name)
+                continue
             if len(Songs) == 1:
                 print("discarding " + artist.name)
                 self.artistSet.discard(artist.name)
@@ -69,6 +69,7 @@ class Graph:
                     continue
                 if len(self.adj[song.ID]) == 0:
                     self.q.put(song)
+                #print("      -inserting " + song.name + " to the graph")
                 self.adj[song.ID].append({song_, artist})
                 self.adj[song_.ID].append({song, artist})
    
@@ -87,6 +88,7 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 
 G = Graph()
+print("begining")
 G.createGraph('Be Like Me', "Lil Pump", 'Linen', 'The Boas')
 print("created")
 G.printAllSongs()

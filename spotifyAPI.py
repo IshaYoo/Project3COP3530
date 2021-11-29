@@ -14,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='2c43ee311bbf471ca4074d7453895f4a'
-SPOTIPY_CLIENT_SECRET='30c33390a17b4ddd9561b7abc02193e4'
+SPOTIPY_CLIENT_ID='f4c360b9a14a4c4b9dbb38163650ed2c'
+SPOTIPY_CLIENT_SECRET='339af01f877d4e7e843dfd82e5d41bd8'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
@@ -72,6 +72,7 @@ def get_filtered_albums_and_songs(artist_name):
             counter += 1
     return tracks
 
+
 #returns an array of all songs in an album that are NOT solo songs
 #used in get_filtered_albums_and_songs
 def get_filtered_tracks_from_album(album_name, artist_name):
@@ -102,6 +103,8 @@ def get_artists_from_song(song_name, song_id):
     #track = sp.search("track:" + song_name, limit=50, offset=0, type='track', market="ES")['tracks']['items'][0]['artists']
     tracks = sp.search("track:" + song_name, limit=50, offset=0, type='track')['tracks']['items']
     indexer = 0
+    if (len(tracks) == 0):
+        return []
     track = tracks[indexer]
     #print("checking " + track['id'] + " vs " + song_id)
     while track['id'] != song_id:
