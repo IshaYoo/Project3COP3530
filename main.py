@@ -5,51 +5,49 @@ import os
 #E48214 is the color gator orange
 
 
-
-
-
 #Creating main root of the GUI
 root = tk.Tk()
 root.title("Spotify Song Linker")
 root.geometry("600x400")
 root.configure(bg = '#E48214') #Setting background color
+titleLabel = Label(root, text = "Spotify Song Linker", bg = '#E48214', font=("Helvetica", 25)).place(x = 200, y = 30)
 
-titleLabel = Label(root, text = "Spotify Song Linker", bg = '#E48214', font=("Helvetica", 25)).place(relx = .3, rely = .2)
-
-
-
-
-
+###########################################################################
 
 #Creating button ONE
 songOneVar = StringVar(root) #Song option variable
-
-
-def songChoice():
-    #Change to get input and pass to graph
-    print("THIS IS THE SONG CHOICE: " + songOneVar.get())
-
-label1 = Label(root, text = "Song choice 1", bg = '#E48214', command = songChoice()).pack(side = LEFT, pady = 100)
-choices = {'a', 'b', 'c'} #Song options
-chooseSong1 = tk.OptionMenu(root, songOneVar, *choices)
+song1Label = Label(root, text = "Song choice 1", bg = '#E48214').place(x = 20, y = 80)
+chooseSong1 = tk.Text(root, height = 2, width = 15)
 chooseSong1.config(font = ('Helvetica', 12), fg = 'orange')
-chooseSong1.place(x = 35, y = 150)
-
+chooseSong1.place(x = 20, y = 100)
+#Artist ONE
+artistOneVar = StringVar(root) #Artist option variable
+artist1Label = Label(root, text = "Artist choice 1", bg = '#E48214').place(x = 20, y = 150)
+chooseArtist1 = tk.Text(root, height = 2, width = 15)
+chooseArtist1.config(font = ('Helvetica', 12), fg = 'orange')
+chooseArtist1.place(x = 20, y = 170)
 
 
 
 
 #Creating button TWO
 songTwoVar = StringVar(root) #Song option variable
-label2 = Label(root, text = "Song choice 2", bg = '#E48214', command = songChoice()).pack(side = RIGHT, pady = 100)
-#choices = {'a', 'b', 'c'} #Song options #Same choices as above
-chooseSong2 = OptionMenu(root, songTwoVar, *choices,)
+song2Label = Label(root, text = "Song choice 2", bg = '#E48214').place(x = 460, y = 80)
+chooseSong2 = tk.Text(root, height = 2, width = 15)
 chooseSong2.config(font = ('Helvetica', 12), fg = 'orange')
-chooseSong2.place(x = 540, y = 150)
+chooseSong2.place(x = 460, y = 100)
+#Artist ONE
+artistTwoVar = StringVar(root) #Artist option variable
+artist2Label = Label(root, text = "Artist choice 2", bg = '#E48214').place(x = 460, y = 150)
+chooseArtist2 = tk.Text(root, height = 2, width = 15)
+chooseArtist2.config(font = ('Helvetica', 12), fg = 'orange')
+chooseArtist2.place(x = 460, y = 170)
 
 
 def chooseAlgorithm():
     choice = algorVar.get()
+    #Make graph
+    #Check if new songs have been inserted, make new graph if needed
     if choice == 1:
         print("1")
         #Prims
@@ -60,7 +58,7 @@ def chooseAlgorithm():
 
 
 algorVar = IntVar()
-algorLabel = Label(root, text = "Choose which algorithm to search with: ", bg = '#E48214', command = songChoice()).pack(side = BOTTOM, padx = 50, pady = 160)
+algorLabel = Label(root, text = "Choose which algorithm to search with: ", bg = '#E48214', command = chooseAlgorithm()).pack(side = BOTTOM, padx = 50, pady = 160)
 Radiobutton(root, text = "Prim's", variable = algorVar, value = 1, bg = '#E48214', command = chooseAlgorithm()).place(relx = .55, rely = .6)
 Radiobutton(root, text = "Kruskal's", variable = algorVar, value = 2, bg = '#E48214', command = chooseAlgorithm()).place(relx = .315, rely = .6)
 
