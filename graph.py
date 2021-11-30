@@ -46,7 +46,7 @@ class Graph:
         while not self.q.empty():
             self.insert_related_songs()
             after = time.localtime().tm_min
-            if after - before > 5:
+            if after - before > 0.5:
                 print("Broke because graph creation took more than 5 minutes")
                 break
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
@@ -102,7 +102,7 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 G = Graph()
 before = time.localtime().tm_min
-G.createGraph('Linen', 'The Boas', 'Be Like Me', "Lil Pump")
+G.createGraph('A Milli', 'Lil Wayne', 'Be Like Me', "Lil Pump")
 # song = Song("songOneName", "1345")
 # song_ = Song("songTwoName", "44533")
 # artist = Artist("guy", "943124")
