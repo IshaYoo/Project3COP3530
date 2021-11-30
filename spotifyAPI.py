@@ -41,7 +41,8 @@ def get_filtered_albums_and_songs(artist_name):
     if len(searchResult) == 0:
         return []
     artistID = searchResult[0]['id']
-    search = sp.artist_albums(artistID, album_type='album', limit=1)
+    search = sp.artist_albums(artistID, album_type='album', limit=50)
+    first = True
     albums = []
     tracks = []
     counter = 0
@@ -53,9 +54,19 @@ def get_filtered_albums_and_songs(artist_name):
         if after - before > 5:
             print("Reached time limit. Cutting off albums for sake of time...")
             return tracks
-        search = sp.next(search)
+        if first:
+            first = False
+        else:
+            search = sp.next(search)
         for album in search['items']:
             found = False
+            rightAlbum = False
+            for artistName in album['artists']:
+                if artistName['name'] == artist_name:
+                    rightAlbum = True
+                    break
+            if not rightAlbum:
+                return tracks
             for temp_album in albums:
                 if (temp_album in album['name'] or album['name'] in temp_album):
                     found = True

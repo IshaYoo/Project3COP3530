@@ -28,24 +28,31 @@ class Graph:
             print("Name of Song: " + vertex[0].name)
     def printAllSongs(self):
         print(len(self.adj))
-        for row in self.adj:
-            print("row")
-            for col in row:
-                print(col[0].name)
-
+        for row[1] in self.adj:
+            print(type(row))
 
     def createGraph(self, song1_name, artist1_name, song2_name, artist2_name):
         song1 = get_song(song1_name, artist1_name)
         print("Adding " + song1.name + " and all related songs to graph")
         self.q.put(song1)
         self.insert_related_songs()
+        before = time.localtime().tm_min
         while not self.q.empty():
             self.insert_related_songs()
+            after = time.localtime().tm_min
+            if after - before > 5:
+                print("Broke because graph creation took more than 5 minutes")
+                break
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
         print("Adding " + song2.name + " and all related songs to graph")
         self.q.put(song2)
+        before = time.localtime().tm_min
         while not self.q.empty():
             self.insert_related_songs()
+            after = time.localtime().tm_min
+            if after - before > 5:
+                print("Broke because graph creation took more than 5 minutes")
+                break
     def insert_related_songs(self):
         song_ = self.q.get()
         Artists = get_artists_from_song(song_.name, song_.ID)
