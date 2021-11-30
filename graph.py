@@ -2,6 +2,7 @@ from collections import defaultdict
 from spotifyAPI import *
 from queue import Queue
 import time
+import sys
 class Artist:
     name = ""
     ID = ""
@@ -17,7 +18,7 @@ class Song:
         self.ID = _ID
 
 class Graph:
-    skipTimeLimit = 0.00001
+    skipTimeLimit = 0.0000001
     adj = defaultdict(list)
     artistSet = set()
     q = Queue()
@@ -60,6 +61,8 @@ class Graph:
             if after - before > self.skipTimeLimit:
                 print("Broke because graph creation took more than " + str(self.skipTimeLimit) + " minutes")
                 break
+        self.dijkstras(song1, song2)
+    
     def insert_related_songs(self):
         song_ = self.q.get()
         Artists = get_artists_from_song(song_.name, song_.ID)
@@ -85,9 +88,54 @@ class Graph:
                 #print("      -inserting " + song.name + " to the graph")
                 self.adj[song.ID].append((song_, artist))
                 self.adj[song_.ID].append((song, artist))
+    def dijkstras(self, song1object, song2object):
+        song1 = song1object.ID
+        song2 = song2object.ID
+        p = dict()
+        d = dict()
+        s = set()
+        s.add(song1)
+        vs = set()
+        for ID in self.adj:
+            if ID == song1:
+                continue
+            for element in self.adj[ID]:
+                vs.add(element[0].ID)
 
+        for v in vs:
+            p[v] = song1
+            #if edge from song1 to v
+            #set d[v] to w(s, v)
+            for edge in self.adj[song1]:
+                if edge[0].ID == v:
+                    d[v] = 1
+                else:
+                    d[v] = sys.maxsize
+        while len(vs) > 0:
+            min = sys.maxsize + 1
+            currU = -1
+            for u in vs:
+                if d[u] <= min:
+                    currU = u
+                    min = d[u]
+            vs.remove(currU)
+            s.add(currU)
+            #for all v adjacent to u in vs
+                #for all v in vs
+                    #if v is adjacent to u
+            for v in vs:
+                for connection in self.adj[v]:
+                    if connection[0].ID == currU:
+                        if (d[currU] + 1) < d[v]:
+                            d[v] = d[currU] + 1
+                            p[v] = currU
 
-   
+        prev = song2
+        print("from " + self.getCurrSong(song2))
+        while prev != song1:
+            prev = p[prev]
+            print("to " + str(self.getCurrSong(prev)))
+            
 
 
 #tracks = get_filtered_albums_and_songs("J Cole")
@@ -103,19 +151,21 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 G = Graph()
 before = time.localtime().tm_min
-G.createGraph('A Milli', 'Lil Wayne', 'Be Like Me', "Lil Pump")
-# song = Song("songOneName", "1345")
-# song_ = Song("songTwoName", "44533")
-# artist = Artist("guy", "943124")
-# G.adj[song.ID].append((song_, artist))
-# G.adj[song_.ID].append((song, artist))
-# song = Song("songTrheeName", "134534")
-# song_ = Song("songFourName", "423454533")
-# artist = Artist("guy2", "305943124")
-# G.adj[song.ID].append((song_, artist))
-# G.adj[song_.ID].append((song, artist))
+G.createGraph('A Milli', 'Lil Wayne', 'Like a Bird', "WILLOW")
+# song1 = Song("S1", "1")
+# song2 = Song("S2", "2")
+# artist1 = Artist("A1", "1")
+# song3 = Song("S3", "3")
+# song4 = Song("S4", "4")
+# artist2 = Artist("A2", "2")
+# artist3 = Artist("A3", "3")
+# G.adj[song1.ID].append((song2, artist1))
+# G.adj[song1.ID].append((song4, artist3))
+# G.adj[song2.ID].append((song1, artist1))
+# G.adj[song4.ID].append((song1, artist3))
+# G.dijkstras(song2, song4)
 
 
-after = time.localtime().tm_min
-print("Took " + str(after - before) + " minutes to create")
-G.printAllSongs()
+# after = time.localtime().tm_min
+# print("Took " + str(after - before) + " minutes to create")
+# G.printAllSongs()
