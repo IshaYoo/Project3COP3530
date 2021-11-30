@@ -17,7 +17,7 @@ class Song:
         self.ID = _ID
 
 class Graph:
-    skipTimeLimit = 0.001
+    skipTimeLimit = 0.00001
     adj = defaultdict(list)
     artistSet = set()
     q = Queue()
