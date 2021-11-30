@@ -17,6 +17,7 @@ class Song:
         self.ID = _ID
 
 class Graph:
+    skipTimeLimit = 0.001
     adj = defaultdict(list)
     artistSet = set()
     q = Queue()
@@ -46,8 +47,8 @@ class Graph:
         while not self.q.empty():
             self.insert_related_songs()
             after = time.localtime().tm_min
-            if after - before > 0.5:
-                print("Broke because graph creation took more than 5 minutes")
+            if after - before > self.skipTimeLimit:
+                print("Broke because graph creation took more than " + str(self.skipTimeLimit) + " minutes")
                 break
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
         print("Adding " + song2.name + " and all related songs to graph")
@@ -56,16 +57,14 @@ class Graph:
         while not self.q.empty():
             self.insert_related_songs()
             after = time.localtime().tm_min
-            if after - before > 5:
-                print("Broke because graph creation took more than 5 minutes")
+            if after - before > self.skipTimeLimit:
+                print("Broke because graph creation took more than " + str(self.skipTimeLimit) + " minutes")
                 break
     def insert_related_songs(self):
         song_ = self.q.get()
         Artists = get_artists_from_song(song_.name, song_.ID)
         for artist in Artists:
             if artist.name in self.artistSet:
-                continue
-            if artist.name == "Baby Sleep":
                 continue
             self.artistSet.add(artist.name)
             print("   -adding " + artist.name + "'s songs to the graph")
@@ -86,6 +85,8 @@ class Graph:
                 #print("      -inserting " + song.name + " to the graph")
                 self.adj[song.ID].append((song_, artist))
                 self.adj[song_.ID].append((song, artist))
+
+
    
 
 
