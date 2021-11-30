@@ -27,9 +27,15 @@ class Graph:
         for vertex in self.adj[ID]:
             print("Name of Song: " + vertex[0].name)
     def printAllSongs(self):
-        print(len(self.adj))
-        for row[1] in self.adj:
-            print(type(row))
+        for list_ in self.adj:
+            for vertex in self.adj[list_]:
+                currSongName = self.getCurrSong(list_)
+                print(currSongName + " and " + vertex[0].name + " are both made by " + vertex[1].name)
+    def getCurrSong(self, ID_):
+        for list_ in self.adj:
+            for vertex in self.adj[list_]:
+                if (vertex[0].ID == ID_):
+                    return vertex[0].name
 
     def createGraph(self, song1_name, artist1_name, song2_name, artist2_name):
         song1 = get_song(song1_name, artist1_name)
@@ -78,8 +84,8 @@ class Graph:
                 if len(self.adj[song.ID]) == 0:
                     self.q.put(song)
                 #print("      -inserting " + song.name + " to the graph")
-                self.adj[song.ID].append({song_, artist})
-                self.adj[song_.ID].append({song, artist})
+                self.adj[song.ID].append((song_, artist))
+                self.adj[song_.ID].append((song, artist))
    
 
 
@@ -97,6 +103,18 @@ class Graph:
 G = Graph()
 before = time.localtime().tm_min
 G.createGraph('Linen', 'The Boas', 'Be Like Me', "Lil Pump")
+# song = Song("songOneName", "1345")
+# song_ = Song("songTwoName", "44533")
+# artist = Artist("guy", "943124")
+# G.adj[song.ID].append((song_, artist))
+# G.adj[song_.ID].append((song, artist))
+# song = Song("songTrheeName", "134534")
+# song_ = Song("songFourName", "423454533")
+# artist = Artist("guy2", "305943124")
+# G.adj[song.ID].append((song_, artist))
+# G.adj[song_.ID].append((song, artist))
+
+
 after = time.localtime().tm_min
 print("Took " + str(after - before) + " minutes to create")
 G.printAllSongs()
