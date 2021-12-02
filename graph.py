@@ -53,6 +53,7 @@ class Graph:
                 break
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
         print("Adding " + song2.name + " and all related songs to graph")
+        self.q = Queue()
         self.q.put(song2)
         before = time.localtime().tm_min
         while not self.q.empty():
@@ -85,10 +86,12 @@ class Graph:
                     continue
                 if len(self.adj[song.ID]) == 0:
                     self.q.put(song)
-                #print("      -inserting " + song.name + " to the graph")
+                print("      -inserting " + song.name + " to the graph")
                 self.adj[song.ID].append((song_, artist))
                 self.adj[song_.ID].append((song, artist))
     def dijkstras(self, song1object, song2object):
+        print("finding connection between " + song1object.name + " and " + song2object.name)
+        print("song2 ID = " + song2object.ID)
         song1 = song1object.ID
         song2 = song2object.ID
         p = dict()
@@ -130,9 +133,11 @@ class Graph:
                             d[v] = d[currU] + 1
                             p[v] = currU
 
-        prev = song2
-        print("from " + self.getCurrSong(song2))
+        prev = song2 
+        print("prev = " + str(prev))
+        print("from " + str(self.getCurrSong(song2)))
         while prev != song1:
+            print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
             prev = p[prev]
             print("to " + str(self.getCurrSong(prev)))
             
@@ -151,19 +156,19 @@ class Graph:
 #print(song1.name + " has ID " + song1.ID)
 G = Graph()
 before = time.localtime().tm_min
-# G.createGraph('A Milli', 'Lil Wayne', 'Like a Bird', "WILLOW")
-song1 = Song("S1", "1")
-song2 = Song("S2", "2")
-artist1 = Artist("A1", "1")
-song3 = Song("S3", "3")
-song4 = Song("S4", "4")
-artist2 = Artist("A2", "2")
-artist3 = Artist("A3", "3")
-G.adj[song1.ID].append((song2, artist1))
-G.adj[song1.ID].append((song4, artist3))
-G.adj[song2.ID].append((song1, artist1))
-G.adj[song4.ID].append((song1, artist3))
-G.dijkstras(song2, song4)
+G.createGraph('A Milli', 'Lil Wayne', 'Like a Bird', "WILLOW")
+# song1 = Song("S1", "1")
+# song2 = Song("S2", "2")
+# artist1 = Artist("A1", "1")
+# song3 = Song("S3", "3")
+# song4 = Song("S4", "4")
+# artist2 = Artist("A2", "2")
+# artist3 = Artist("A3", "3")
+# G.adj[song1.ID].append((song2, artist1))
+# G.adj[song1.ID].append((song4, artist3))
+# G.adj[song2.ID].append((song1, artist1))
+# G.adj[song4.ID].append((song1, artist3))
+# G.dijkstras(song2, song4)
 
 
 # after = time.localtime().tm_min
