@@ -17,7 +17,7 @@ class Song:
 SPOTIPY_CLIENT_ID='09d18eb8a21041e0b7a362c752cbde2f'
 SPOTIPY_CLIENT_SECRET='e18d6038794a43ed850e2c281f150d58'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
-SCOPE = 'user-library-read'
+SCOPE = 'user-top-read'
 
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET, redirect_uri=SPOTIPY_REDIRECT_URI, scope=SCOPE))
@@ -30,58 +30,92 @@ def get_filtered_albums_and_songs(artist_name):
     timeToSleep = 5
     while timedOut:
         try:
-            searchResult = sp.search("artist:" + artist_name, limit=1, offset=0, type='artist')['artists']['items']
+            searchResult = sp.search("artist:" + artist_name, limit=50, offset=0, type='artist')['artists']['items']
             timedOut = False
         except:
             print("An error occured. Trying again")
             time.sleep(timeToSleep)
             timeToSleep *= 2
         
-
     if len(searchResult) == 0:
         return []
     artistID = searchResult[0]['id']
-    search = sp.artist_albums(artistID, album_type='album', limit=50)
+    try:
+        search = sp.artist_albums(artistID, album_type='album', limit=50)
+    except:
+        print("Error in querying albums for " + artist_name)
     first = True
     albums = []
     tracks = []
     counter = 0
-    while search['next']:
-        if counter > 50:
-            print("Reached album limit. Cutting off albums for sake of time...")
+
+    for album in search['items']:
+        found = False
+        rightAlbum = False
+        for artistName in album['artists']:
+            if artistName['name'] == artist_name:
+                rightAlbum = True
+                break
+        if not rightAlbum:
             return tracks
-        after = time.localtime().tm_min
-        if after - before > 5:
-            print("Reached time limit. Cutting off albums for sake of time...")
-            return tracks
-        if first:
-            first = False
-        else:
-            search = sp.next(search)
-        for album in search['items']:
-            found = False
-            rightAlbum = False
-            for artistName in album['artists']:
-                if artistName['name'] == artist_name:
-                    rightAlbum = True
-                    break
-            if not rightAlbum:
-                return tracks
-            for temp_album in albums:
-                if (temp_album in album['name'] or album['name'] in temp_album):
-                    found = True
-                    break
-            if (found):
-                continue
-            albums.append(album['name'])
-            #print("Album: " + album['name'])
+        for temp_album in albums:
+            if (temp_album in album['name'] or album['name'] in temp_album):
+                found = True
+                break
+        if (found):
+            continue
+        albums.append(album['name'])
+        try:
             temp_track_names = get_filtered_tracks_from_album(album['name'], artist_name)
-            for song in temp_track_names:
-                #print("   song: " + song)
-                #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
-                #print(songNAME + " has ID: " + songID)
-                tracks.append(song)
-            counter += 1
+        except:
+            print("error in querying songs from " + album['name'])
+        for song in temp_track_names:
+            # print("   song: " + song.name)
+            #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
+            #print(songNAME + " has ID: " + songID)
+            tracks.append(song)
+        counter += 1
+
+
+    # while search['next']:
+    #     print("A")
+    #     if counter > 50:
+    #         print("Reached album limit. Cutting off albums for sake of time...")
+    #         return tracks
+    #     after = time.localtime().tm_min
+    #     if after - before > 5:
+    #         print("Reached time limit. Cutting off albums for sake of time...")
+    #         return tracks
+    #     if first:
+    #         first = False
+    #     else:
+    #         search = sp.next(search)
+    #     for album in search['items']:
+    #         found = False
+    #         rightAlbum = False
+    #         for artistName in album['artists']:
+    #             if artistName['name'] == artist_name:
+    #                 rightAlbum = True
+    #                 break
+    #         if not rightAlbum:
+    #             return tracks
+    #         for temp_album in albums:
+    #             if (temp_album in album['name'] or album['name'] in temp_album):
+    #                 found = True
+    #                 break
+    #         if (found):
+    #             continue
+    #         albums.append(album['name'])
+    #         print("Album: " + album['name'])
+    #         temp_track_names = get_filtered_tracks_from_album(album['name'], artist_name)
+    #         for song in temp_track_names:
+    #             print("   song: " + song)
+    #             #songID = sp.search("track:" + song, limit=1, offset=0, type='track', market="ES")['tracks']['id']
+    #             #print(songNAME + " has ID: " + songID)
+    #             tracks.append(song)
+    #         counter += 1
+    
+    
     return tracks
 
 

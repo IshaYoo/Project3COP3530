@@ -65,13 +65,14 @@ class Graph:
         self.dijkstras(song1, song2)
     
     def insert_related_songs(self):
+        soloSong = True
         song_ = self.q.get()
         Artists = get_artists_from_song(song_.name, song_.ID)
         for artist in Artists:
             if artist.name in self.artistSet:
                 continue
             self.artistSet.add(artist.name)
-            print("   -adding " + artist.name + "'s songs to the graph")
+            # print("   -adding " + artist.name + "'s songs to the graph")
             skipIt = False
             try:
                 Songs = get_filtered_albums_and_songs(artist.name)
@@ -81,14 +82,16 @@ class Graph:
             if len(Songs) == 1:
                 print("discarding " + artist.name)
                 self.artistSet.discard(artist.name)
+            print("Number of collabs by " + artist.name + " is " + str(len(Songs)))
             for song in Songs:
                 if(song.name == song_):
                     continue
                 if len(self.adj[song.ID]) == 0:
                     self.q.put(song)
-                print("      -inserting " + song.name + " to the graph")
+                # print("      -inserting " + song.name + " to the graph")
                 self.adj[song.ID].append((song_, artist))
                 self.adj[song_.ID].append((song, artist))
+
     def dijkstras(self, song1object, song2object):
         print("finding connection between " + song1object.name + " and " + song2object.name)
         print("song2 ID = " + song2object.ID)
