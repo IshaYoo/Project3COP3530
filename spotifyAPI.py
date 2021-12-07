@@ -14,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='d93f6190be1d4d3da4bf6f4444cd8acd'
-SPOTIPY_CLIENT_SECRET='8efdabf1785b4ba2a56d5db8634ce234'
+SPOTIPY_CLIENT_ID='914c2111074d4861900b984791ab15f6'
+SPOTIPY_CLIENT_SECRET='bb57c499d69244c3aacb708e55659708'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
@@ -25,7 +25,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, clie
 #returns an array of all songs from artist that are NOT solo songs
 #...returns an array of song objects
 def get_filtered_albums_and_songs(artist_name):
-    before = time.localtime().tm_min
     timedOut = True
     timeToSleep = 5
     while timedOut:
