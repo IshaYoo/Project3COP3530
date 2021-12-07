@@ -14,8 +14,8 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='09d18eb8a21041e0b7a362c752cbde2f'
-SPOTIPY_CLIENT_SECRET='e18d6038794a43ed850e2c281f150d58'
+SPOTIPY_CLIENT_ID='d93f6190be1d4d3da4bf6f4444cd8acd'
+SPOTIPY_CLIENT_SECRET='8efdabf1785b4ba2a56d5db8634ce234'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
 SCOPE = 'user-top-read'
 
