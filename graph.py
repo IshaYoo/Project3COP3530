@@ -82,7 +82,7 @@ class Song:
 
 
 class Graph:
-    skipTimeLimit = 0.0000000001
+    skipTimeLimit = 0.00000001
     adj = defaultdict(list)
     artistSet = set()
     q = Queue()
@@ -136,7 +136,9 @@ class Graph:
                 break
             self.insert_related_songs()
             after = time.localtime().tm_min
+        print("\nStarting BFS \n")
         self.bfsSTR = self.BFS_Search(song1, song2)
+        print("\nStarting Dijkstra's \n")
         self.dijSTR = self.dijkstras(song1, song2)
 
     def isConnection(self, song1objectName, song1artistName, song2objectName, song2artistname):
@@ -188,7 +190,8 @@ class Graph:
                 self.adj[song_.ID].append((song, artist))
 
     def dijkstras(self, song1object, song2object):
-        print("finding connection between " + song1object.name + " and " + song2object.name)
+        self.dijSTR = song2object.name
+        print(song2object.name)
         # print("song2 ID = " + song2object.ID)
         # print("song1 ID = " + song1object.ID)
         song1 = song1object.ID
@@ -245,31 +248,15 @@ class Graph:
                     if (d[currU] + 1 < d[vx]):
                         d[vx] = d[currU] + 1
                         p[vx] = currU
-            # for v in vs:
-            #     for connection in self.adj[v]:
-            #         if connection[0].ID == currU:
-            #             if (d[currU] + 1) < d[v]:
-            #                 d[v] = d[currU] + 1
-            #                 p[v] = currU
+
         prev = song2
-        # if (p[prev] == song1):
-        # return
-        # print("Song " + str(self.getCurrSong(song2)))
         while prev != song1:
             oldSong = prev
             artistConnection = ""
-            # print("prev = " + str(prev))
             prev = p[prev]
-            # for vertex in self.adj[prev]:
-            #     currSongName = self.getCurrSong(vertex)
-            # print(currSongName)
-            # print(" and ")
-            # print(vertex[0].name)
-            # print(" are both made by ")
-            # print(vertex[1].name)
-            # print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
-            print(str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev)))
-            self.dijSTR = self.dijSTR + "\n" + str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev))
+            print(str(self.getCurrSong(prev)))
+            self.dijSTR = self.dijSTR + "\n" + str(self.getCurrSong(prev))
+
         return self.dijSTR
 
     def BFS_Search(self, srcSong, targetSong):
