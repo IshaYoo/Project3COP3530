@@ -284,7 +284,7 @@ class Graph:
                 # print(vertex[1].name)
             # print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
             print(str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev)))
-            
+    
 
 
 #tracks = get_filtered_albums_and_songs("J Cole")

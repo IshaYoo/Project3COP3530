@@ -1,4 +1,4 @@
-"03 Greedo", 
+["03 Greedo", 
 "070 Shake", 
 "100 Kila", 
 "12 Gauge", 
@@ -2170,4 +2170,4 @@
 "Zilla", 
 "ZillaKami", 
 "Zion I", 
-"Zombie Juice", 
+"Zombie Juice"]
