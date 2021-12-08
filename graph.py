@@ -378,14 +378,6 @@ class Graph:
                 self.adj[song_.ID].append((song, artist))
 
     def dijkstras(self, song1object, song2object):
-        # print(song2object.name + " is connected to:")
-        # for vertex in self.adj[song2object.ID]:
-        #     print("   " + vertex[0].name)
-
-        # print(song1object.name + " is connected to:")
-        # for vertex in self.adj[song1object.ID]:
-        #     print("   " + vertex[0].name)
-
         print("finding connection between " + song1object.name + " and " + song2object.name)
         # print("song2 ID = " + song2object.ID)
         # print("song1 ID = " + song1object.ID)
@@ -411,11 +403,14 @@ class Graph:
             p[v_] = song1
             #if edge from song1 to v
             #set d[v] to w(s, v)
+            found = False
             for edge in self.adj[song1]:
                 if edge[0].ID == v_:
-                    d[v_] = 1
-                else:
-                    d[v_] = sys.maxsize - 1
+                    d[v_] = 0
+                    found = True
+                    break
+            if (not found):
+                d[v_] = sys.maxsize - 1
         while len(vs) > 0:
             min = sys.maxsize + 1
             currU = -1
@@ -428,7 +423,7 @@ class Graph:
             #for all v adjacent to u in vs
                 #for all v adjacent to u
                     #if u is in vs
-            for connection in self.adj[currU]:
+            for connection in self.adj[currU]: #for each vertex connected to min
                 vx = 0
                 for temp in vs:
                     cont = False
@@ -437,9 +432,9 @@ class Graph:
                         cont = True
                         break
                 if (cont):
-                    if (d[currU] + 1 < d[temp]):
-                        d[temp] = d[currU] + 1
-                        p[temp] = currU
+                    if (d[currU] + 1 < d[vx]):
+                        d[vx] = d[currU] + 1
+                        p[vx] = currU
             # for v in vs:
             #     for connection in self.adj[v]:
             #         if connection[0].ID == currU:
@@ -464,6 +459,7 @@ class Graph:
                 # print(vertex[1].name)
             # print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
             print(str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev)))
+
 
 
     def BFS_Search(self, srcSong, targetSong):

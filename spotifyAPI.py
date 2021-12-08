@@ -14,10 +14,10 @@ class Song:
 
 #First make a spotify devloper account and create an app
 #Use that information to update SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
-SPOTIPY_CLIENT_ID='46e18203155c44c787f59cf36ce46a8a'
-SPOTIPY_CLIENT_SECRET='ffec022115cb41579777e3aae48791fe'
+SPOTIPY_CLIENT_ID='4b6f506eefdd4315a0b66d70681b2a6a'
+SPOTIPY_CLIENT_SECRET='f0aeaebee00b4a37a397f9734b7fd81a'
 SPOTIPY_REDIRECT_URI='http://127.0.0.1:9090'
-SCOPE = 'user-library-read'
+SCOPE = 'user-top-read'
 
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET, redirect_uri=SPOTIPY_REDIRECT_URI, scope=SCOPE))
