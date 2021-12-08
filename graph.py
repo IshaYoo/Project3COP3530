@@ -386,14 +386,6 @@ class Graph:
         # for vertex in self.adj[song1object.ID]:
         #     print("   " + vertex[0].name)
 
-        for vertex in self.adj[song1object.ID]:
-            if (vertex[0].ID == song2object.ID):
-                currSongName = self.getCurrSong(song1object.ID)
-                print(currSongName + " and " + vertex[0].name + " are both made by " + vertex[1].name)
-
-
-
-        print("Size of the graph is now +" + str(len(self.adj)) + " songs")
         print("finding connection between " + song1object.name + " and " + song2object.name)
         # print("song2 ID = " + song2object.ID)
         # print("song1 ID = " + song1object.ID)
@@ -472,23 +464,39 @@ class Graph:
                 # print(vertex[1].name)
             # print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
             print(str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev)))
-        print("to " + str(self.getCurrSong(prev)))
+
 
     def BFS_Search(self, srcSong, targetSong):
         queue = Queue()
         visited = dict()
+        prevMap = dict()
         visited[srcSong.ID] = True
         queue.put(srcSong)
         while not queue.empty():
             currentSong = queue.get()
             if currentSong.ID == targetSong.ID:
-                print(currentSong.name)
+                #print(currentSong.name)
                 break
-            print(currentSong.name)
             for edge in self.adj[currentSong.ID]:
                 if visited.get(edge[0].ID, "null") == "null":
                     visited[edge[0].ID] = True
+                    prevMap[edge[0].ID] = currentSong
                     queue.put(edge[0])
+        songIter = prevMap[targetSong.ID]
+        print(targetSong.name)
+        names = []
+        while not songIter.ID == srcSong.ID:
+            oldName = songIter.name
+            names.insert(0, oldName)
+            songIter = prevMap[songIter.ID]
+        
+        for name in names:
+            print(name)
+        print(srcSong.name)
+
+        
+
+        
             
 
 
@@ -511,8 +519,6 @@ while (x == "yes"):
     song2Name = input("Enter song 2 name:\n")
     artist2Name = input("Enter song 2's artist:\n")
     G.createGraph(song1Name, artist1Name, song2Name, artist2Name)
-    if (~G.isConnection(song1Name, artist1Name, song2Name, artist2Name)):
-        print("No connection made. Try again and maybe we can find a connection.")
     x = input("Continue? Enter yes or no\n")
 
     
