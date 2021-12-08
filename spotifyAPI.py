@@ -2371,7 +2371,10 @@ def getExelInfo():
             worksheet.write(row, col, artist)
             col += 1
             for song in songs:
-                worksheet.write(row, col, song)
+                try:
+                    worksheet.write(row, col, song)
+                except:
+                    print("Error in making excel file")
                 tracks.append(song)
                 col += 1
             row += 1
