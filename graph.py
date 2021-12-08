@@ -163,8 +163,8 @@ class Graph:
         self.songSet.add(song_.ID)
         Artists = get_artists_from_song(song_.name, song_.ID)
         for artist in Artists:
-            if artist.name in self.artistSet:
-                continue
+            # if artist.name in self.artistSet:
+            #     continue
             self.artistSet.add(artist.name)
             print(".")
             # print("   -adding " + artist.name + "'s songs to the graph, " + str(self.q.qsize()) + " songs left in the queue")
@@ -191,8 +191,6 @@ class Graph:
                         # print("      -inserting " + song.name + " to the graph")
                     self.adj[song.ID].append((song_, artist))
                     self.adj[song_.ID].append((song, artist))
-                    if (song.name == "Be Like Me"):
-                        print("Adding from " + self.getCurrSong(song.ID).name + " to " + self.getCurrSong(song_.ID).name + " through artist " + artist.name)
 
     def dijkstras(self, song1object, song2object):
         # print(song2object.name + " is connected to:")
