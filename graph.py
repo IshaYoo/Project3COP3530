@@ -81,11 +81,11 @@ class Song:
 
 class Graph:
     skipTimeLimit = 0.0000000001
-    songLimiter = 50
     adj = defaultdict(list)
     artistSet = set()
     q = Queue()
     songSet = set()
+    capped = False
     def insert(self, song1, song2, artist):
         self.adj[song1.ID].append((song2, artist))
         self.adj[song2.ID].append((song1, artist))
@@ -112,28 +112,25 @@ class Graph:
         index = 0
         while not self.q.empty():
             self.insert_related_songs()
-            index += 1
-            if (index == self.songLimiter):
-                break
         song2 = get_song(song2_name, artist2_name) #get_song(song2_name, artist2_name)
         print("Adding " + song2.name + " and all related songs to graph")
         self.q = Queue()
+        self.capped = False
         # self.artistSet = set() #this possibly messes up the entire algorith,
         self.q.put(song2)
         self.insert_related_songs()
         index = 0
         while not self.q.empty():
             self.insert_related_songs()
-            index += 1
-            if (index == self.songLimiter):
-                break
+
+        G.isConnection(song1Name, artist1Name, song2Name, artist2Name)
         
-        print("Size of the graph is now +" + str(len(self.adj)) + " songs")
-        if (self.dijkstras(song1, song2) == False):
-            if (~G.isConnection(song1Name, artist1Name, song2Name, artist2Name)):
-                print("No connection made. Try again and maybe we can find a connection.")
-            else:
-                print("There is a discrepancy in the code for some reason")
+        # print("Size of the graph is now +" + str(len(self.adj)) + " songs")
+        # if (self.dijkstras(song1, song2) == False):
+        #     if (~G.isConnection(song1Name, artist1Name, song2Name, artist2Name)):
+        #         print("No connection made. Try again and maybe we can find a connection.")
+        #     else:
+        #         print("There is a discrepancy in the code for some reason")
     
     def isConnection(self, song1objectName, song1artistName, song2objectName, song2artistname):
         song1object = get_song(song1objectName, song1artistName)
@@ -152,22 +149,25 @@ class Graph:
                 visited.add(adjacentV[0].ID)
                 stack.push(adjacentV[0].ID)
         if (song2object.ID in visited):
-            return True
-        return False
+            print("YES! CONNECTION")
+            self.dijkstras(song1object, song2object)
+        else:
+            print("NOPE! FAILED")
     
     def insert_related_songs(self):
         soloSong = True
         song_ = self.q.get()
         if song_ in self.songSet:
             return
-        print("   adding " + song_.name + "'s related songs to queue")
+        # print("   adding " + song_.name + "'s related songs to queue")
         self.songSet.add(song_.ID)
         Artists = get_artists_from_song(song_.name, song_.ID)
         for artist in Artists:
             if artist.name in self.artistSet:
                 continue
             self.artistSet.add(artist.name)
-            # print("   -adding " + artist.name + "'s songs to the graph")
+            print(".")
+            # print("   -adding " + artist.name + "'s songs to the graph, " + str(self.q.qsize()) + " songs left in the queue")
             skipIt = False
             try:
                 Songs = get_filtered_albums_and_songs(artist.name)
@@ -182,10 +182,17 @@ class Graph:
                 if(song.name == song_):
                     continue
                 if len(self.adj[song.ID]) == 0:
-                    self.q.put(song)
-                # print("      -inserting " + song.name + " to the graph")
-                self.adj[song.ID].append((song_, artist))
-                self.adj[song_.ID].append((song, artist))
+                    if song.ID not in self.songSet:
+                        if self.q.qsize() <= 50 and self.capped == False:
+                            self.q.put(song)
+                            self.songSet.add(song.ID)
+                        if self.q.qsize() > 50 and self.capped == False:
+                            self.capped = True
+                        # print("      -inserting " + song.name + " to the graph")
+                    self.adj[song.ID].append((song_, artist))
+                    self.adj[song_.ID].append((song, artist))
+                    if (song.name == "Be Like Me"):
+                        print("Adding from " + self.getCurrSong(song.ID).name + " to " + self.getCurrSong(song_.ID).name + " through artist " + artist.name)
 
     def dijkstras(self, song1object, song2object):
         # print(song2object.name + " is connected to:")
@@ -264,10 +271,6 @@ class Graph:
             #                 d[v] = d[currU] + 1
             #                 p[v] = currU
         prev = song2 
-        if (prev == song1):
-            return False
-        if (p[prev] == song1):
-            return False
         # print("Song " + str(self.getCurrSong(song2)))
         while prev != song1:
             oldSong = prev
@@ -283,7 +286,6 @@ class Graph:
                 # print(vertex[1].name)
             # print("testing: prev = " + str(prev) + " p[prev] = " + str(p[prev]))
             print(str(self.getCurrSong(oldSong)) + " is connected to " + str(self.getCurrSong(prev)))
-        return True
             
 
 

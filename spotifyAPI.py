@@ -136,8 +136,8 @@ def get_filtered_tracks_from_album(album_name, artist_name):
             break
     if duplicate:
         continue
-    if (len(song['artists']) == 1):
-        continue
+    # if (len(song['artists']) == 1):
+    #     continue
     newSong.name = song['name']
     newSong.ID = song['id']
     track_ids.append(newSong)
