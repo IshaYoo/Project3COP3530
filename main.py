@@ -19,8 +19,8 @@ def runProgram():
 
     G.createGraph(song1, artist1, song2, artist2)
 
-    textBoxDij.config(text = G.dijSTR)
-    textBoxBFS.config(text = G.bfsSTR)
+    textBoxDij.config(text = "Took " + str(G.dij_time) + "\n" + G.dijSTR)
+    textBoxBFS.config(text = "Took " + str(G.bfs_time) + "\n" + G.bfsSTR)
 
 
 #Creating main root of the GUI

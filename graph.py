@@ -88,6 +88,8 @@ class Graph:
     q = Queue()
     dijSTR = ""
     bfsSTR = ""
+    bfs_time = 0
+    dij_time = 0
 
     def insert(self, song1, song2, artist):
         self.adj[song1.ID].append((song2, artist))
@@ -137,9 +139,15 @@ class Graph:
             self.insert_related_songs()
             after = time.localtime().tm_min
         print("\nStarting BFS \n")
+        before = time.localtime().tm_min
         self.bfsSTR = self.BFS_Search(song1, song2)
+        after = time.localtime().tm_min
+        self.bfs_time = before - after
         print("\nStarting Dijkstra's \n")
+        before = time.localtime().tm_min
         self.dijSTR = self.dijkstras(song1, song2)
+        after = time.localtime().tm_min
+        self.dij_time = before - after
 
     def isConnection(self, song1objectName, song1artistName, song2objectName, song2artistname):
         song1object = get_song(song1objectName, song1artistName)
@@ -190,7 +198,9 @@ class Graph:
                 self.adj[song_.ID].append((song, artist))
 
     def dijkstras(self, song1object, song2object):
-        self.dijSTR = song2object.name
+        #self.dijSTR = song2object.name
+        arr = []
+        arr.append(song2object.name)
         print(song2object.name)
         # print("song2 ID = " + song2object.ID)
         # print("song1 ID = " + song1object.ID)
@@ -255,7 +265,12 @@ class Graph:
             artistConnection = ""
             prev = p[prev]
             print(str(self.getCurrSong(prev)))
-            self.dijSTR = self.dijSTR + "\n" + str(self.getCurrSong(prev))
+            #self.dijSTR = self.dijSTR + "\n" + str(self.getCurrSong(prev))
+            arr.append(str(self.getCurrSong(prev)))
+
+        for song in reversed(arr):
+            self.dijSTR = self.dijSTR + "\n" + song
+
 
         return self.dijSTR
 
