@@ -139,15 +139,17 @@ class Graph:
             self.insert_related_songs()
             after = time.localtime().tm_min
         print("\nStarting BFS \n")
-        before = time.localtime().tm_min
+        before = time.time_ns()
         self.bfsSTR = self.BFS_Search(song1, song2)
-        after = time.localtime().tm_min
-        self.bfs_time = before - after
+        after = time.time_ns()
+        print("BFS took " + str(after - before))
+        self.bfs_time = (after / 1000000000) - (before / 1000000000)
         print("\nStarting Dijkstra's \n")
-        before = time.localtime().tm_min
+        before = time.time_ns()
         self.dijSTR = self.dijkstras(song1, song2)
-        after = time.localtime().tm_min
-        self.dij_time = before - after
+        after = time.time_ns()
+        print("Dij took " + str(after - before))
+        self.dij_time = (after / 1000000000) - (before / 1000000000)
 
     def isConnection(self, song1objectName, song1artistName, song2objectName, song2artistname):
         song1object = get_song(song1objectName, song1artistName)
