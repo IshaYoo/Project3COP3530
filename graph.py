@@ -201,6 +201,7 @@ class Graph:
 
     def dijkstras(self, song1object, song2object):
         #self.dijSTR = song2object.name
+        self.dijSTR = ""
         arr = []
         arr.append(song2object.name)
         print(song2object.name)
