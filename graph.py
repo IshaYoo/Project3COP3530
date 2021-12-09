@@ -144,11 +144,11 @@ class Graph:
         after = time.time_ns()
         print("BFS took " + str(after - before))
         self.bfs_time = (after / 1000000000) - (before / 1000000000)
-        print("\nStarting Dijkstra's \n")
+        # print("\nStarting Dijkstra's \n")
         before = time.time_ns()
         self.dijSTR = self.dijkstras(song1, song2)
         after = time.time_ns()
-        print("Dij took " + str(after - before))
+        # print("Dij took " + str(after - before))
         self.dij_time = (after / 1000000000) - (before / 1000000000)
 
     def isConnection(self, song1objectName, song1artistName, song2objectName, song2artistname):
