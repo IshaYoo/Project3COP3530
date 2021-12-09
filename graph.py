@@ -144,7 +144,7 @@ class Graph:
         after = time.time_ns()
         print("BFS took " + str(after - before))
         self.bfs_time = (after / 1000000000) - (before / 1000000000)
-        # print("\nStarting Dijkstra's \n")
+        print("\nStarting Dijkstra's \n")
         before = time.time_ns()
         self.dijSTR = self.dijkstras(song1, song2)
         after = time.time_ns()

@@ -12,15 +12,18 @@ def runProgram():
     #Make graph
     #Check if new songs have been inserted, make new graph if needed
 
+
     song1 = chooseSong1.get(1.0, "end-1c")
     artist1 = chooseArtist1.get(1.0, "end-1c")
     song2 = chooseSong2.get(1.0, "end-1c")
     artist2 = chooseArtist2.get(1.0, "end-1c")
 
+    time.sleep(1)
+
     G.createGraph(song1, artist1, song2, artist2)
 
-    textBoxDij.config(text = "Took " + str(G.dij_time) + " seconds" + G.dijSTR)
-    textBoxBFS.config(text = "Took " + str(G.bfs_time) + " seconds \n" + G.bfsSTR)
+    textBoxDij.config(text = "Took %.6f" % G.dij_time + " seconds" + G.dijSTR)
+    textBoxBFS.config(text = "Took %.6f" % G.bfs_time + " seconds \n" + G.bfsSTR)
 
 
 #Creating main root of the GUI
